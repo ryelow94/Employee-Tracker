@@ -1,8 +1,8 @@
--- INSERT INTO department (id, name) 
--- VALUES (001, "Accounting"); 
+INSERT INTO department (id, name) 
+VALUES ( 001, "Accounting"); 
 
--- INSERT INTO role (id, title, salary,) 
--- VALUES ( "Accountant", 50.000,) 
+INSERT INTO role (title, salary, department_id) 
+VALUES ("Accountant", 50000, "Accounting"); 
 
-INSERT INTO employee (id, first_name, last_name) 
-VALUES (001, "John", "Doe")
+INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+VALUES ("John", "Doe", "Accountant" , "Tom" );

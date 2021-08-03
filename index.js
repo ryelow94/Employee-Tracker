@@ -1,5 +1,6 @@
 const inquirer = require("inquirer") 
 const mysql = require("mysql2") 
+const cTable = require('console.table');
 
 const db = mysql.createConnection(
     {
@@ -11,25 +12,87 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee database.`)
   ); 
 
-const options = {
-    addRole(){
-        console.log("addRole")
+const options = { 
+      viewDepartment(){db.query("SELECT * FROM department", function (err, results) { 
+        console.table(results)
+    })
+  },
+      viewRole(){db.query("SELECT * FROM role", function (err, results) {
+      console.table(results)
+      })
     }, 
-    addDepartment(){}, 
-    addEmployee(){}, 
+      viewEmployees(){db.query("SELECT * FROM employee", function (err, results) {
+        console.table(results)
+      })
+    },
+    async addRole(){ 
+      let response = await inquirer.prompt([
+      {
+        type: "input",
+        message: "Which role would you like to add?",
+        name: "newRole"
+      },
+      {
+        type: "input",
+        message: "What is the salary for this role?",
+        name: "newRoleSalary"
+      },
+      {
+        type: "input",
+        message: "What is the department for this role?",
+        name: "newRoleDepartment"
+      },
+    ]);
+    db.query(`INSERT INTO role SET title = ?, salary = ?, department_id = ?`, [response.newRole, response.newRoleSalary, response.newRoleDepartment]),
+    db.query("SELECT * FROM role", function (err, results) { 
+      if (err) { console.log(err)
+      } else {console.table(results) 
+    }})
+    }, 
+    async addDepartment(){
+      let response = await inquirer.prompt([
+        {
+          type: "input",
+          message: "Which department would you like to add?",
+          name: "newDepartment"
+        }
+      ]) 
+      db.query(`INSERT INTO department SET name = ?`, response.newDepartment)
+          db.query("SELECT * FROM department", function (err, results) { 
+            if (err) { console.log(err)
+            } else {console.table(results) 
+          }})
+    },
+    async addEmployee(){ 
+      let response = await inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the employee's first name?",
+          name: "employeeFirstName"
+        },
+        {
+          type: "input",
+          message: "What is the employee's last name?",
+          name: "employeeLastName"
+        },
+        {
+          type: "input",
+          message: "What is the employee's role?", 
+          name: "employeeRole"
+        }, 
+        {
+          type: "input",
+          message: "What is the employee's manager's name?",
+          name: "employeeManager"
+        },
+      ]);
+      db.query(`INSERT INTO employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ?`, [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager]),
+      db.query("SELECT * FROM employee", function (err, results) { 
+        if (err) { console.log(err)
+        } else {console.table(results) 
+      }})
+      }, 
     updateEmployee(){},
-    viewDepartment(){db.query("SELECT * FROM department", function (err, results) {
-        console.log(results)
-    })
-    },
-    viewRole(){db.query("SELECT * FROM role", function (err, results) {
-        console.log(results)
-    })
-    }, 
-    viewEmployees(){db.query("SELECT * FROM employee", function (err, results) {
-        console.log(results)
-    })
-    },
 };  
 
 runApp()
@@ -53,13 +116,13 @@ function dataBaseAction () {
         type: 'list',
         message: 'Which of the following would you like to do',
         choices: [
-          'viewDepartments',
-          'viewRoles',
+          'viewDepartment',
+          'viewRole',
           'viewEmployees',
           'addDepartment',
           'addRole',
           'addEmployee',
-          'updateEmployeeRole',
+          'updateEmployee',
         ],
         name: 'action',
       },
@@ -69,7 +132,7 @@ function dataBaseAction () {
     return inquirer.prompt([
       {
         type: 'confirm',
-        message: 'do you want to continue',
+        message: 'Do you want to continue?',
         name: 'continuePrompt',
       },
     ]);
