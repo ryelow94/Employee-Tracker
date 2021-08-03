@@ -92,7 +92,24 @@ const options = {
         } else {console.table(results) 
       }})
       }, 
-    updateEmployee(){},
+     async updateEmployee(){ 
+      let response = await inquirer.prompt([
+        {
+          type: "input",
+          message: "What is the employee's id you would like to update?",
+          name: "employeeId"
+        },
+        {
+          type: "input",
+          message: "What is the employee's new role",
+          name: "employeeUpdateRole"
+        },
+      ]);
+        db.query(`UPDATE employee SET role_id = ? WHERE id = ?`, [response.employeeUpdateRole, response.employeeId]),
+        function (error, res) {
+          if (error) throw error;
+        };
+    },
 };  
 
 runApp()
