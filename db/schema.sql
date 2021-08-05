@@ -20,5 +20,5 @@ CREATE TABLE employee (
     first_name VARCHAR(30),
     last_name VARCHAR(30), 
     role_id VARCHAR(30), 
-    manager_id VARCHAR(30)  
+    manager_id VARCHAR(30)
 );
