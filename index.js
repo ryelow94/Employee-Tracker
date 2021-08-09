@@ -83,7 +83,6 @@ const options = {
       ]);
       await db.query(`INSERT INTO employee SET first_name = ?, last_name = ?, role_id = ?, manager_id = ?`, [response.employeeFirstName, response.employeeLastName, response.employeeRole, response.employeeManager]);
       const employees = await db.query("SELECT * FROM employee");
-      console.log(employees[0])
       console.table(employees[0])
       },
      async updateEmployee(){ 
